@@ -1,0 +1,336 @@
+{
+  "info": {
+    "_postman_id": "8e6d9789-d215-4801-ad10-cf7b96d169db",
+    "name": "user_flow_automation",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "53495987",
+    "_collection_link": "https://go.postman.co/collection/53495987-8e6d9789-d215-4801-ad10-cf7b96d169db?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "login(extract_token)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Parse the JSON response",
+              "var jsonData = pm.response.json();",
+              "",
+              "// Extract token if present, otherwise fall back to id",
+              "var tokenValue = jsonData.token ? jsonData.token : jsonData.id;",
+              "",
+              "// Store it in the environment variable 'token'",
+              "pm.environment.set(\"token\", tokenValue);",
+              "",
+              "// Confirm the token was set",
+              "if (jsonData.token) {",
+              "    console.log(\"Token extracted and stored:\", tokenValue);",
+              "} else {",
+              "    console.log(\"No 'token' field found. Stored 'id' as fallback:\", tokenValue);",
+              "}",
+              "",
+              "// Verify the response status is 200",
+              "pm.test(\"Response status is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "// Get the current timestamp",
+              "var now = new Date();",
+              "",
+              "// Format as \"MM-DD-YYYY HH:MM:SS\" with leading zeros",
+              "var month = String(now.getMonth() + 1).padStart(2, '0');",
+              "var day = String(now.getDate()).padStart(2, '0');",
+              "var year = now.getFullYear();",
+              "var hours = String(now.getHours()).padStart(2, '0');",
+              "var minutes = String(now.getMinutes()).padStart(2, '0');",
+              "var seconds = String(now.getSeconds()).padStart(2, '0');",
+              "",
+              "var formattedTimestamp = month + \"-\" + day + \"-\" + year + \" \" + hours + \":\" + minutes + \":\" + seconds;",
+              "",
+              "// Store in environment variable 'time now'",
+              "pm.environment.set(\"time now\", formattedTimestamp);",
+              "",
+              "// Print to console",
+              "console.log(\"Current Timestamp:\", formattedTimestamp);",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [
+          {
+            "key": "x-api-key",
+            "value": "reqres_3383b948c4234345856a306a5d0e8616",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"email\": \"eve.holt@reqres.in\",\r\n    \"password\": \"cityslicka\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://reqres.in/api/login?page=2",
+          "protocol": "https",
+          "host": [
+            "reqres",
+            "in"
+          ],
+          "path": [
+            "api",
+            "login"
+          ],
+          "query": [
+            {
+              "key": "page",
+              "value": "2"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "create_user",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Parse the JSON response",
+              "var jsonData = pm.response.json();",
+              "",
+              "// Extract the 'id' field from the response",
+              "var userId = jsonData.id;",
+              "",
+              "// Store it in the environment variable 'userid'",
+              "pm.environment.set(\"userid\", userId);",
+              "",
+              "// Print the extracted id to the console",
+              "console.log(\"Extracted user id:\", userId);",
+              "pm.test(\"Extracted user id\", function () {",
+              "    pm.expect(pm.response.code).to.be.oneOf([201, 202]);",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [
+          {
+            "key": "x-api-key",
+            "value": "reqres_3383b948c4234345856a306a5d0e8616",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"name\": \"John Doe\",\r\n    \"job\": \"QA Engineer\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://reqres.in/api/users",
+          "protocol": "https",
+          "host": [
+            "reqres",
+            "in"
+          ],
+          "path": [
+            "api",
+            "users"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "update_user",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "",
+              "// Test 1: Response status is 200",
+              "pm.test(\"Response status is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Test 2: Response body contains 'name' field and it is a string",
+              "pm.test(\"Response body contains 'name' field and it is a string\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property(\"name\");",
+              "    pm.expect(jsonData.name).to.be.a(\"string\");",
+              "});",
+              "",
+              "// Test 3: Response body contains 'job' field and it is a string",
+              "pm.test(\"Response body contains 'job' field and it is a string\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property(\"job\");",
+              "    pm.expect(jsonData.job).to.be.a(\"string\");",
+              "});",
+              "",
+              "// Test 4: Response body contains 'updatedAt' field and it is a string",
+              "pm.test(\"Response body contains 'updatedAt' field and it is a string\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property(\"updatedAt\");",
+              "    pm.expect(jsonData.updatedAt).to.be.a(\"string\");",
+              "});",
+              "",
+              "// Test 5: Response time is less than 3000ms",
+              "pm.test(\"Response time is less than 3000ms\", function () {",
+              "    pm.expect(pm.response.responseTime).to.be.below(3000);",
+              "});",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "PUT",
+        "header": [
+          {
+            "key": "x-api-key",
+            "value": "reqres_3383b948c4234345856a306a5d0e8616",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"name\": \"vamsi\",\n    \"job\": \"XYZ\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseurl}}/api/users/{{userid}}",
+          "host": [
+            "{{baseurl}}"
+          ],
+          "path": [
+            "api",
+            "users",
+            "{{userid}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "delete_user",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 204\", function () {\r",
+              "    pm.response.to.have.status(204);\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "x-api-key",
+            "value": "reqres_3383b948c4234345856a306a5d0e8616",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": ""
+        },
+        "url": {
+          "raw": "{{baseurl}}/api/users/{{userid}}",
+          "host": [
+            "{{baseurl}}"
+          ],
+          "path": [
+            "api",
+            "users",
+            "{{userid}}"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
